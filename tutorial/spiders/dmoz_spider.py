@@ -1,6 +1,7 @@
 import scrapy
 from tutorial.items import DmozItem
-from tutorial.models import *
+from tutorial.DataBase import *
+
 
 class MobileSpider(scrapy.Spider):
     name = "cwl_mob"
@@ -11,28 +12,47 @@ class MobileSpider(scrapy.Spider):
         self.start_urls = ['http://www.digikala.com/Main/%s' % category]
 
     def parse(self, response):
-        count = 1
         for sel in response.xpath('//ul/li/a[@class="brand"]'):
             item = DmozItem()
-            # item = Category()
-            # item.category_unique = 'mobile-%s' % sel.xpath('span[@class="left"]/text()').extract()
-            # item.category_link = sel.xpath('@href').extract()
-            # item.category_name = sel.xpath('span[@class="left"]/text()').extract()
-            # yield item
-            item['title']= 'mobile-%s' % sel.xpath('span[@class="left"]/text()').extract()
-            item['link']= sel.xpath('@href').extract()
-            item['category']= sel.xpath('span[@class="left"]/text()').extract()
+            item['title'] = 'mobile'
+            item['link'] = sel.xpath('@href').extract()
+            item['category'] = sel.xpath('span[@class="left"]/text()').extract()
+            self._data = {
+                'category_unique': item['title'],
+                'category_name': item['category'],
+                'category_link': item['link']
+            }
+            insert_category(**self._data)
             yield item
-            try:
-                category = Category.create(category_unique=str(count), category_name='mehdi', category_link='link')
-                category.save()
-            except:
-                print 'error'
-            # item.save()
+
 
 class ProductSpider(scrapy.Spider):
     name = "cwl_pdt"
 
-    def __init__(self, *args, **kwargs):
-        super(MobileSpider, self).__init__(*args, **kwargs)
-        self.start_urls = ['http://www.digikala.com/Main/%s']
+    def __init__(self, category=None, url=None, category_type=None, *args, **kwargs):
+        self.category = category
+        self.category_type = category_type
+        self.start_urls = ['http://www.digikala.com%s/PageNo-1/' % url]
+        super(ProductSpider, self).__init__(*args, **kwargs)
+
+    def parse(self, response):
+        pass
+        print self.category
+        print self.start_urls
+        count = 0
+        print count
+
+        for sel in response.xpath('//div[@id="main"]/div[@id="content"]/section/article[@id="items"]/div[@id="products"]'):
+            print 'aaa', sel.xpath('div/text()').extract()
+
+        # for sel in response.xpath('//div[@id="products"]'):
+        #     print 'ok'
+        #     print sel.xpath('div/a/@href').extract()
+        #     item = DmozItem()
+        #     item['title'] = 'mobile'
+        #     item['link'] = sel.xpath('@href').extract()
+        #     item['category'] = 'test'
+        #     count += 1
+        #     print count
+        #     yield item
+

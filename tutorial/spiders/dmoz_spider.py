@@ -42,7 +42,7 @@ class ProductSpider(scrapy.Spider):
         count = 0
         print count
 
-        for sel in response.xpath('//div[@id="main"]/div[@id="content"]/section/article[@id="items"]/div[@id="products"]'):
+        for sel in response.xpath('//div[@id="products"]'):
             print 'aaa', sel.xpath('div/text()').extract()
 
         # for sel in response.xpath('//div[@id="products"]'):

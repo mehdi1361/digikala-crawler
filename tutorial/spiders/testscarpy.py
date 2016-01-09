@@ -3,6 +3,8 @@ from scrapy.http import Request
 from scrapy.exceptions import CloseSpider
 from tutorial.items import NewsItem
 from scrapy.selector import Selector
+
+
 class SeekingAlpha(Spider):
     name = "so"
     download_delay = 0.1
@@ -10,8 +12,8 @@ class SeekingAlpha(Spider):
     more_pages = True
     next_page = 1
 
-    start_urls = ['http://seekingalpha.com/account/ajax_headlines_content?type=in_focus_articles&page=0'+
-                      '&slugs=tsla&is_symbol_page=true']
+    start_urls = ['http://seekingalpha.com/account/ajax_headlines_content?type=in_focus_articles&page=0' +
+                  '&slugs=tsla&is_symbol_page=true']
 
     allowed_domains = ['seekingalpha.com']
 
@@ -32,16 +34,15 @@ class SeekingAlpha(Spider):
             # self.log("About to close spider", log.WARNING)
             raise CloseSpider(reason="no more pages to parse")
 
-
         # there is some content extract links to articles
         sel = Selector(response)
         links_xpath = "//div[@class='symbol_article']/a/@href"
         links = sel.xpath(links_xpath).extract()
-       # for link in links:
-           # url = urljoin(response.url, link)
-            # follow link to article
-            # commented out to see how pagination works
-            #yield Request(url, callback=self.parse_item)
+        # for link in links:
+        # url = urljoin(response.url, link)
+        # follow link to article
+        # commented out to see how pagination works
+        # yield Request(url, callback=self.parse_item)
 
         # generate request for next page
         self.next_page += 1
@@ -51,7 +52,7 @@ class SeekingAlpha(Spider):
         """
         Parsing of each article page.
         """
-       # self.log("Scraping: %s" % response.url, level=log.INFO)
+        # self.log("Scraping: %s" % response.url, level=log.INFO)
 
         hxs = Selector(response)
 

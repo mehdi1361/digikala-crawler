@@ -1,7 +1,9 @@
 import scrapy
-from tutorial.items import DmozItem
+import json
+from tutorial.items import DmozItem,DetailItem
 from tutorial.DataBase import *
-
+from scrapy.http import Request
+from scrapy.contrib.spiders import CrawlSpider, Rule
 
 class MobileSpider(scrapy.Spider):
     name = "cwl_mob"
@@ -25,34 +27,29 @@ class MobileSpider(scrapy.Spider):
             insert_category(**self._data)
             yield item
 
+class MobileSpider1(scrapy.Spider):
+    name = "cwl_mob1"
+    # allowed_domains = ["dmoz.org"]
+    start_urls = [
+        "http://api.digikala.com/JzNMJGUkc7s=/wxzPbOeaJM2f7qjgetwqKg3HONlZKYBT?aqPI=43024&aqIIO=false&aqIP=false",
+    ]
 
-class ProductSpider(scrapy.Spider):
-    name = "cwl_pdt"
-
-    def __init__(self, category=None, url=None, category_type=None, *args, **kwargs):
-        self.category = category
-        self.category_type = category_type
-        self.start_urls = ['http://www.digikala.com%s/PageNo-1/' % url]
-        super(ProductSpider, self).__init__(*args, **kwargs)
+    def make_requests_from_url(self, url):
+        request = super(MobileSpider1, self).make_requests_from_url(url)
+        request.cookies['foo'] = 'bar'
+        return request
 
     def parse(self, response):
-        pass
-        print self.category
-        print self.start_urls
-        count = 0
-        print count
-
-        for sel in response.xpath('//div[@id="products"]'):
-            print 'aaa', sel.xpath('div/text()').extract()
-
-        # for sel in response.xpath('//div[@id="products"]'):
-        #     print 'ok'
-        #     print sel.xpath('div/a/@href').extract()
-        #     item = DmozItem()
-        #     item['title'] = 'mobile'
-        #     item['link'] = sel.xpath('@href').extract()
-        #     item['category'] = 'test'
-        #     count += 1
-        #     print count
-        #     yield item
+        for sel in response.xpath('//ul/li/a[@class="brand"]'):
+            item = DmozItem()
+            item['title'] = 'mobile'
+            item['link'] = sel.xpath('@href').extract()
+            item['category'] = sel.xpath('span[@class="left"]/text()').extract()
+            self._data = {
+                'category_unique': item['title'],
+                'category_name': item['category'],
+                'category_link': item['link']
+            }
+            insert_category(**self._data)
+            yield item
 

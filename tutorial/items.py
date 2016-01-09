@@ -18,8 +18,7 @@ class DmozItem(scrapy.Item):
     link = scrapy.Field()
     category = scrapy.Field()
 
-class NewsItem(scrapy.Item):
-    url = scrapy.Field()
-    source = scrapy.Field()
-    title = scrapy.Field()
-    date = scrapy.Field()
+class DetailItem(scrapy.Item):
+    start_url = scrapy.Field()
+    product_id = scrapy.Field()
+

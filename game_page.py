@@ -1,10 +1,15 @@
 #!/usr/bin/python2.7
+import logging
 import urllib3
 import requests
 import json
 from bs4 import BeautifulSoup
 from farsroid_db import Games_Urls, Game_Description, Game_picture
 from celery import Celery
+from mimetypes import guess_extension
+
+LOG_FILENAME = 'Log/RequestLog.out'
+logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG,)
 
 app = Celery('bazinama', broker='amqp://guest@localhost//')
 
@@ -87,9 +92,12 @@ def game_crawl(url, game_id):
     # download('logo',game_id,apk_file)
     # download('apk',game_id,apk_file)
     counter = 1
-    # for img in soup:
-    #     # print img.img['src']
-    #     # download('image',pic_id ,img.img['src'])
-    #     pic = Game_picture(url =img.img['src'], game_desc=game_desc)
-    #     pic.save()
-    #     counter += 1
+    for img in soup:
+        print ("game_desc= %s" % game_desc.id)
+        logging.info("game_id= %s" % game_desc.id)
+        # print img.img['src']
+        pic_id = "%s-%s" % (game_desc.id, counter   )
+        download('image',pic_id ,img.img['src'])
+        pic = Game_picture(url =img.img['src'], game_desc=game_desc, file_name= "%s.jpg" % pic_id)
+        pic.save()
+        counter += 1

@@ -1,3 +1,4 @@
+
 import peewee as pw
 db = pw.MySQLDatabase("farsroid_db", host="127.0.0.1", port=3306, user="root", passwd="13610522")
 
@@ -29,16 +30,22 @@ class Game_Description(pw.Model):
 class Game_picture(pw.Model):
     url = pw.CharField()
     game_desc = pw.ForeignKeyField(Game_Description)
-
-class Game_image(pw.Model):
-    url = pw.CharField()
-    game_desc = pw.ForeignKeyField(Game_Description)
-
-class Game_logo(pw.Model):
-    url = pw.CharField()
-    game_desc = pw.ForeignKeyField(Game_Description)
+    file_name = pw.CharField()
     class Meta:
         database = db
+
+# class Game_image(pw.Model):
+#     url = pw.CharField()
+#     game_desc = pw.ForeignKeyField(Game_Description)
+#
+#     class Meta:
+#         database = db
+#
+# class Game_logo(pw.Model):
+#     url = pw.CharField()
+#     game_desc = pw.ForeignKeyField(Game_Description)
+#     class Meta:
+#         database = db
 # db.connect()
 # db.create_table(Genre)
 # db.create_table(Games_Urls)
@@ -46,3 +53,4 @@ class Game_logo(pw.Model):
 # db.create_table(Game_picture)
 # db.create_table(Game_image)
 # db.create_table(Game_logo)
+# db.create_tables(Genre, Games_Urls, Game_Description, Game_picture, Game_image, Game_logo)

@@ -3,5 +3,6 @@ from game_page import game_crawl
 fetch_game_page = Games_Urls.select()
 
 for game in fetch_game_page:
-    print 'id=%s, url=%s' % (game.id,game.url)
+    print ('id=%s, url=%s' % (game.id,game.url))
     game_crawl.delay(game.url, game.id)
+    # game_crawl(game.url, game.id)
